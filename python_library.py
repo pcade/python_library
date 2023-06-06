@@ -30,15 +30,15 @@ import xml.etree.ElementTree as ET
 from xml.dom.minidom import parse
 import threading
 import time
+import datetime
 
 # ============================================================================
-# Функции поиска и подтверждения
 # ============================================================================
 
 # Функция проверки наличия дирректории
 def is_dir(path) -> bool:
 
-    if os.path.isdir(path) == False:
+    if not os.path.isdir(path):
         print(f'{path} - False')
         return(False)
     print(f'{path} - True')
@@ -236,25 +236,45 @@ def get_tag_from_xml_file(path ,file_name, tag_name):
         return print(title)
 
 #====================================================================
-# Функции паралельного запуска
+# Функция обратного отсчёта времени от текущего -1 минута
 #====================================================================
-def paralel_function():
-    def function1():
-        time.sleep(10)
-        print('function1 завершена')
+def reverse_time() -> str:
+    i = 0
+    while True:
+        time.sleep(60)
+        now = datetime.datetime.now()
+        delta = datetime.timedelta(minutes=i) 
+        result = now - delta  
+        i += 1
+        return(result.strftime("%H:%M"))
 
-    def function2():
+#====================================================================
+# Функция поточного запуска функции, тут вариант с stress-ng принтом что он работает
+#====================================================================
+def stressng_function() -> bool:
+    def stress_test() -> bool:
+        os.system("sudo script -c 'stress-ng --cpu 0 --cpu-method all -t 1h --metrics' > stress-ng.log")
+        return(True)
+
+    def status_message() -> bool:
+        i = 1
+        result = 60
         while True:
             if not thread1.is_alive():
                 break
-            print('im here')
+            time.sleep(60)
+            if result == 0:
+                return(True)
+            result -= i
+            print(result)
 
-    if __name__ == '__main__':
-        thread1 = threading.Thread(target=function1)
-        thread2 = threading.Thread(target=function2)
+    thread1 = threading.Thread(target=stress_test)
+    thread2 = threading.Thread(target=status_message)
 
-        thread1.start()
-        thread2.start()
+    thread1.start()
+    thread2.start()
 
-        thread1.join()
-        thread2.join()
+    thread1.join()
+    thread2.join()
+    return(True)
+
