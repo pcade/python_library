@@ -28,6 +28,8 @@ import os
 import json
 import xml.etree.ElementTree as ET
 from xml.dom.minidom import parse
+import threading
+import time
 
 # ============================================================================
 # Функции поиска и подтверждения
@@ -236,3 +238,28 @@ def get_tag_from_xml_file(path ,file_name, tag_name):
     
 list_ = list(os.popen('ls ~/gpahomov/important/my/ | grep jpg && ls | grep png && ls | grep png && ls | grep gif').read().rstrip().split('\n'))
 print(len(list_))
+
+
+#====================================================================
+# Функции паралельного запуска
+#====================================================================
+def paralel_function():
+    def function1():
+        time.sleep(10)
+        print('function1 завершена')
+
+    def function2():
+        while True:
+            if not thread1.is_alive():
+                break
+            print('im here')
+
+    if __name__ == '__main__':
+        thread1 = threading.Thread(target=function1)
+        thread2 = threading.Thread(target=function2)
+
+        thread1.start()
+        thread2.start()
+
+        thread1.join()
+        thread2.join()
