@@ -124,14 +124,13 @@ def write_doka(path, file_name, old_str, new_str) -> bool:
 #====================================================================
 
 # Функции проверки установленных компонентов apt
-def apt_pack_checker(pack_name) -> bool:
-
-    if os.popen("dpkg -s "+ pack_name +" | grep install | awk '{print $2;}'").read().rstrip() == 'install':
-        print(f'{ pack_name } = True')
-        return(True)
+def apt_pack_checker(package_name)-> bool:
+    if os.popen("dpkg -s "+ package_name +" | grep install | awk '{print $2;}'").read().rstrip() == 'install':
+        print(f'{ package_name } = True')
+        return True
     else:
-        print(f'{ pack_name } = False')
-        return(False)
+        print(f'{ package_name } = False')
+        return False
 
 # Функция проверки установленных компонентов pip
 def pip_pack_checker(pip_pack) -> bool:
