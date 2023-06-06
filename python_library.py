@@ -235,10 +235,6 @@ def get_tag_from_xml_file(path ,file_name, tag_name):
         # Находим тег "title" и выводим его текст
         title = book.find('title').text
         return print(title)
-    
-list_ = list(os.popen('ls ~/gpahomov/important/my/ | grep jpg && ls | grep png && ls | grep png && ls | grep gif').read().rstrip().split('\n'))
-print(len(list_))
-
 
 #====================================================================
 # Функции паралельного запуска
