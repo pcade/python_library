@@ -215,6 +215,24 @@ def change_3_tag_param_json(path, file_name, tag_1, tag_2, tag_3 ,mask) -> bool:
             print(f"{file_name} {tag_3} = {json_load[str(tag_1)][str(tag_2)][str(tag_3)]}")
     return(True)
 
+# Функция которая принимает список path1 дирректорий в дирректории path в которой находится json с одинаком названием, но с разным содержанием для вычитки требуемых параметров в список
+def parser_json_function(path, path_1, file_1) -> list:
+    i = 0
+    my_list = []
+    while len(path_1) > i:
+        with open(path + path_1[i] + '/' + file_1, 'r') as handle:
+            json_load = json.load(handle)
+            first = json_load['RequiredPackages_apt']
+            if first is not None:
+                if json_load['RequiredPackages_apt']['all'] is None:
+                    for x in first:
+                        my_list.append(x)
+                else:
+                    for x in json_load['RequiredPackages_apt']['all']:
+                        my_list.append(x)
+        i += 1
+    return(my_list)
+
 #====================================================================
 # Функции работы с xml
 #====================================================================
