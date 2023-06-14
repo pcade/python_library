@@ -31,6 +31,8 @@ from xml.dom.minidom import parse
 import threading
 import time
 import datetime
+import re
+import subprocess
 
 # ============================================================================
 # ============================================================================
@@ -252,6 +254,19 @@ def get_tag_from_xml_file(path ,file_name, tag_name):
         # Находим тег "title" и выводим его текст
         title = book.find('title').text
         return print(title)
+    
+# Функция преобразования xml -> html
+
+def xml_to_html(xml_file) -> bool:
+    pattern = "\d+"
+    for file in xml_file:
+        pattern = re.compile(pattern)
+        x=re.findall(pattern,file)
+        if x :
+            xml=file
+            html=x[0]+".html"
+            subprocess.call(['xsltproc',xml,'-o',html])
+    return(True)
 
 #====================================================================
 # Функция обратного отсчёта времени от текущего -1 минута
