@@ -121,6 +121,25 @@ def write_doka(path, file_name, old_str, new_str) -> bool:
     fin.close()
     return(True)
 
+# Функция парсинга файла по временным меткам и по содержанию
+# path - pwd до файла
+# file_name - наименование фала
+# start_str - время вхождения в формате 13:30:31
+# end_str - время вхождения в формате 13:30:31
+# flag - содержащеся значение в искомом промежутке, например 'root'
+
+def parser_auth_log(path, file_name, start_str, end_str, flag) -> str:
+    with open(path + '/' + file_name, 'r') as file:
+
+        lst = file.readlines()
+
+        for i in lst:
+            if start_str and flag in i:
+                print(i.rstrip())
+            if end_str in i:
+                break
+        return(True)
+
 #====================================================================
 # Функции проверки установленных компонентов
 #====================================================================
