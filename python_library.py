@@ -336,7 +336,6 @@ def stressng_function() -> bool:
 import logging
 
 def logger(msg, log_file, level=logging.INFO):
-    # Настройте логгер для каждого вызова с динамическим именем файла
     log_file = os.path.splitext(os.path.basename(log_file))[0]
     log_file_msgformat = "%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s"
     logging.basicConfig(filename=f'{log_file}.log',
