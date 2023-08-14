@@ -330,3 +330,24 @@ def stressng_function() -> bool:
     thread2.join()
     return(True)
 
+#====================================================================
+# Функция логирования трёх статусов в лог соответствующий наименованию модуля где был вызван
+#====================================================================
+import logging
+
+def logger(msg, log_file, level=logging.INFO):
+    # Настройте логгер для каждого вызова с динамическим именем файла
+    log_file = os.path.splitext(os.path.basename(log_file))[0]
+    log_file_msgformat = "%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s"
+    logging.basicConfig(filename=f'{log_file}.log',
+                        filemode='a',
+                        format=log_file_msgformat,
+                        level=logging.INFO)
+
+    if level == logging.INFO:
+        logging.info(f'{log_file}: {msg}')
+    elif level == logging.WARNING:
+        logging.warning(f'{log_file}: {msg}')
+    elif level == logging.ERROR:
+        logging.error(f'{log_file}: {msg}')
+
