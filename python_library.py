@@ -340,23 +340,27 @@ def stressng_function() -> bool:
     thread2.join()
     return(True)
 
-#====================================================================
-# Функция логирования трёх статусов в лог соответствующий наименованию модуля где был вызван
-#====================================================================
-import logging
 
-def logger(msg, log_file, level=logging.INFO):
-    log_file = os.path.splitext(os.path.basename(log_file))[0]
-    log_file_msgformat = "%(asctime)s - %(module)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s"
-    logging.basicConfig(filename=f'{log_file}.log',
-                        filemode='a',
-                        format=log_file_msgformat,
-                        level=logging.INFO)
+# ============================================================================
+# Логер передаётся через __file__
+# ============================================================================
+def get_logger(module_name):
+    log_file = os.path.splitext(os.path.basename(module_name))[0]
+    logger = logging.getLogger(log_file)
+    logger.setLevel(logging.INFO)
 
-    if level == logging.INFO:
-        logging.info(f'{log_file}: {msg}')
-    elif level == logging.WARNING:
-        logging.warning(f'{log_file}: {msg}')
-    elif level == logging.ERROR:
-        logging.error(f'{log_file}: {msg}')
+    handler = logging.FileHandler(f'{log_file}.log')
+    handler.setLevel(logging.INFO)
 
+    formatter = logging.Formatter('%(asctime)s - %(module)s - %(levelname)s: %(lineno)d - %(message)s')
+    handler.setFormatter(formatter)
+
+    if not logger.hasHandlers():
+        logger.addHandler(handler)
+
+    return logger
+
+#logger_main = logger_module.get_logger(__file__)
+#logger_main.info('This is an info message')
+#logger_main.warning('This is a warning message')
+#logger_main.error('This is an error message')
