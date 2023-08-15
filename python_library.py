@@ -33,6 +33,7 @@ import time
 import datetime
 import re
 import subprocess
+import xmltodict
 
 # ============================================================================
 # ============================================================================
@@ -286,6 +287,15 @@ def xml_to_html(xml_file) -> bool:
             html=x[0]+".html"
             subprocess.call(['xsltproc',xml,'-o',html])
     return(True)
+
+# Функция преобразования lshw.xml -> json
+def lshw_to_json():
+    result = subprocess.run(['lshw', '-xml'], stdout=subprocess.PIPE)
+    xml_output = result.stdout
+
+    json_output = json.dumps(xmltodict.parse(xml_output), indent=4, sort_keys=True)
+
+    return(json_output)
 
 #====================================================================
 # Функция обратного отсчёта времени от текущего -1 минута
