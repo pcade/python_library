@@ -342,14 +342,17 @@ def stressng_function() -> bool:
 
 
 # ============================================================================
-# Логер передаётся через __file__
+# Логер передаётся через __file__ в .log
 # ============================================================================
-def get_logger(module_name):
+def logger_log(module_name):
     log_file = os.path.splitext(os.path.basename(module_name))[0]
     logger = logging.getLogger(log_file)
     logger.setLevel(logging.INFO)
 
-    handler = logging.FileHandler(f'{log_file}.log')
+    if not os.path.isdir(f'/RFAL/{os.uname().release}/other_logs'):
+        os.makedirs(f'/RFAL/{os.uname().release}/other_logs')
+
+    handler = logging.FileHandler(f'/RFAL/{os.uname().release}/other_logs/{log_file}.log')
     handler.setLevel(logging.INFO)
 
     formatter = logging.Formatter('%(asctime)s - %(module)s - %(levelname)s: %(lineno)d - %(message)s')
@@ -359,6 +362,27 @@ def get_logger(module_name):
         logger.addHandler(handler)
 
     return logger
+
+# ============================================================================
+# Логер передаётся через __file__ в console
+# ============================================================================
+
+def logger_console(module_name, type, msg):
+    RESET = "\033[0m"
+    RED = "\033[31m"
+    YELLOW = "\033[33m"
+    GREEN = "\033[32m"
+    BLUE = "\e[0;34m"
+
+    TYPE = {
+        'error' or 'ERROR' : f'{RED} ERROR {RESET}',
+        'crytical' and 'CRYTICAL' : f'{RED} CRYTICAL {RESET}',
+        'info' and 'INFO' : f'{GREEN} INFO {RESET}',
+        'blue' and 'DEBUG' : f'{BLUE} DEBUG {RESET}',
+        'warning' and 'WARNING' : f'{YELLOW} WARNING {RESET}'
+    }
+
+    print (f'{time.strftime("%Y-%m-%d %H:%M:%S")} - {os.path.splitext(os.path.basename(module_name))[0]} - {TYPE[type]} - {msg}')
 
 #logger_main = logger_module.get_logger(__file__)
 #logger_main.info('This is an info message')
