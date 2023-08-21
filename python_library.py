@@ -34,6 +34,8 @@ import datetime
 import re
 import subprocess
 import xmltodict
+import functools
+import hashlib
 
 # ============================================================================
 # ============================================================================
@@ -59,10 +61,33 @@ def is_file(path, file_name) -> bool:
     print(f'{file_name} in {path} - True')
     return(True)
 
+# Функции проверки спика каталогов и вложенных файлов файлов
+def get_files_list(dir_path):
+  file_list = []
+
+  for root, dirs, files in os.walk(dir_path):
+    for file in files:
+      file_list.append(os.path.join(root, file))
+
+  return file_list
+
+# проверку можно осуществить следующим примером
+#if functools.reduce(lambda x, y : x and y, map(lambda p, q: p == q,get_files_list('/boot'),get_files_list('/home')), True):
+#     print (f"The lists first_list and second_list are the same")
+#else:
+#    print (f"The lists first_list and second_list are not the same")
+
 
 # ============================================================================
 # Функции поиска, подтверждения и записи в файлах
 # ============================================================================
+# Функция снятия MD5
+def get_md5(file_path):
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
 
 # Функция поиска конкретной строки
 def parser_str_file(path, file_name, find_str) -> bool:
