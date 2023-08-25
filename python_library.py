@@ -413,3 +413,50 @@ def logger_console(module_name, type, msg):
 #logger_main.info('This is an info message')
 #logger_main.warning('This is a warning message')
 #logger_main.error('This is an error message')
+
+# ============================================================================
+# Функция отслеживания изменений в указанной дирректории или файле
+# ============================================================================
+import pyinotify
+import signal
+
+import sys_logger
+logger = sys_logger.logger_log(__file__)
+class EventHandler(pyinotify.ProcessEvent):
+    def process_IN_CREATE(self, event):
+        logger_console(__file__, 'error', f"Creating:{event.pathname}")
+
+    def process_IN_DELETE(self, event):
+        logger_console(__file__, 'error', f"Removing:{event.pathname}")
+
+    def process_IN_MODIFY(self, event):
+        logger_console(__file__, 'error', f"Modifying:{event.pathname}")
+
+    def process_IN_ATTRIB(self, event):
+        logger_console(__file__, 'error', f"Changing attribute:{event.pathname}")
+
+    def process_IN_MOVED_FROM(self, event):
+        logger_console(__file__, 'error', f"Moving out:{event.pathname}")
+
+def exit_gracefully(signum, frame):
+    logger_console(__file__, 'info', f"Monitoring stop")
+    sys.exit()
+
+def monitor_changes(directory='/'):
+    signal.signal(signal.SIGTERM, exit_gracefully)
+    signal.signal(signal.SIGINT, exit_gracefully)
+
+    wm = pyinotify.WatchManager()
+    mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY | pyinotify.IN_ATTRIB | pyinotify.IN_MOVED_FROM
+
+    handler = EventHandler()
+    notifier = pyinotify.Notifier(wm, handler)
+
+    wm.add_watch(directory, mask)
+
+    try:
+        logger_console(__file__, 'info', f"Monitoring start")
+        notifier.loop()
+    except KeyboardInterrupt:
+        logger_console(__file__, 'info', f"Monitoring stop")
+        notifier.stop()
