@@ -71,6 +71,24 @@ def get_files_list(dir_path):
 
   return file_list
 
+# ============================================================================
+# Скрипт для глобального переименования файлов в дирректории
+# ============================================================================
+from os import listdir
+from os.path import isfile, join
+import os
+
+def rename_in_dir() -> bool:
+    onlyfiles = [f for f in listdir(os.path.abspath(os.curdir)) if isfile(join(os.path.abspath(os.curdir), f))]
+    for i in onlyfiles:
+        print(i)
+        if i[:3].upper().lower() == 'Cer'.upper().lower():
+            b = i.split('_')
+            if b[1][:2].upper().lower() == 'se'.upper().lower():
+                os.rename(i, f'Certificate_alse_{b[2]}')
+                print(f'{i} переименован в - Certificate_alse_{b[2]}')
+    return(True)
+
 # проверку можно осуществить следующим примером
 #if functools.reduce(lambda x, y : x and y, map(lambda p, q: p == q,get_files_list('/boot'),get_files_list('/home')), True):
 #     print (f"The lists first_list and second_list are the same")
