@@ -456,7 +456,7 @@ def logger_console(module_name, type, msg):
 import pyinotify
 import signal
 
-import sys_logger
+
 logger = sys_logger.logger_log(__file__)
 class EventHandler(pyinotify.ProcessEvent):
     def process_IN_CREATE(self, event):
