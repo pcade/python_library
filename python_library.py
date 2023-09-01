@@ -71,6 +71,24 @@ def get_files_list(dir_path):
 
   return file_list
 
+# Функция рекурсивного копирования файлов из одной дирректории в другую
+import shutil
+def copy_files_to_RFAL():
+    src_dir = os.getcwd()
+    dest_dir = "/RFAL"
+
+    if not os.path.isdir(dest_dir):
+        os.makedirs(dest_dir)
+
+    for item in os.listdir(src_dir):
+        src = os.path.join(src_dir, item)
+        dest = os.path.join(dest_dir, item)
+        if os.path.isdir(src):
+            shutil.copytree(src, dest, False, None)
+        else:
+            shutil.copy2(src, dest)
+    return(True)
+
 # ============================================================================
 # Скрипт для глобального переименования файлов в дирректории
 # ============================================================================
@@ -478,3 +496,24 @@ def monitor_changes(directory='/'):
     except KeyboardInterrupt:
         logger_console(__file__, 'info', f"Monitoring stop")
         notifier.stop()
+
+# ============================================================================
+# Функция создания systemd
+# ============================================================================
+def init_func(name, path) -> bool:
+    logger.info(f"start: init_func()")
+    service_content = f'[Unit]\nDescription={name}\n\n[Service]\nExecStart={path}{name} start\nExecStop={path}{name} stop\n\n[Install]\nWantedBy=multi-user.target'
+    with open('/etc/systemd/system/{name}.service', 'w') as f:
+        f.write(service_content)
+    time.sleep(1)
+    os.system('sudo systemctl daemon-reload')
+    time.sleep(1)
+    return(True)
+
+# ============================================================================
+# Функция kill процесса по имени и пиду
+# ============================================================================
+def kill_pid(name_pid):
+    print("stop mode")
+    name = os.popen('sudo pgrep -f {name_pid}').read().rstrip().split('\n')
+    os.system(f'sudo kill {name[0]}')
