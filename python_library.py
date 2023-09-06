@@ -511,9 +511,18 @@ def init_func(name, path) -> bool:
     return(True)
 
 # ============================================================================
-# Функция kill процесса по имени и пиду
+# Функция прерывания
 # ============================================================================
+
+# Функция kill процесса по имени и пиду
+
 def kill_pid(name_pid):
     print("stop mode")
     name = os.popen('sudo pgrep -f {name_pid}').read().rstrip().split('\n')
     os.system(f'sudo kill {name[0]}')
+
+# Функция обработки прерывания ctrl+c
+
+import signal
+#signal.signal(signal.SIGTERM, exit_gracefully)
+#signal.signal(signal.SIGINT, exit_gracefully)
