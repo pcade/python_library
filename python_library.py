@@ -526,3 +526,59 @@ def kill_pid(name_pid):
 import signal
 #signal.signal(signal.SIGTERM, exit_gracefully)
 #signal.signal(signal.SIGINT, exit_gracefully)
+
+
+
+# ============================================================================
+# Функция быстрой сортировки
+# ============================================================================
+def quiksort(array):
+    if len(array) < 2:
+        return array
+    pivot = array[0]
+    less = [i for i in array[1:] if i < pivot]
+    greater = [i for i in array[1:] if i > pivot]
+    return quiksort(less) + [pivot] + quiksort(greater)
+    
+
+# ============================================================================
+# БЫстрая сортировка с применением  алгоритма Лемпера-Тарьяна
+# ============================================================================
+def median_of_three(array, start, end):
+    mid = (start + end) // 2
+    if array[start] < array[mid]:
+        if array[mid] < array[end]:
+            return mid
+        elif array[start] < array[end]:
+            return end
+        else:
+            return start
+    elif array[start] > array[end]:
+        return end
+    else:
+        if array[mid] < array[end]:
+            return end
+        else:
+            return mid
+
+def partition(array, start, end):
+    pivot_index = median_of_three(array, start, end)
+    pivot = array[pivot_index]
+    array[pivot_index], array[end] = array[end], array[pivot_index]
+    i = start
+    for j in range(start, end):
+        if array[j] < pivot:
+            array[i], array[j] = array[j], array[i]
+            i += 1
+    array[i], array[end] = array[end], array[i]
+    return i
+
+
+def quiksort(array, start=0, end=None):
+    if end is None:
+        end = len(array) - 1
+    if start < end:
+        pivot_index = partition(array, start, end)
+        quiksort(array, start, pivot_index - 1)
+        quiksort(array, pivot_index + 1, end)
+    return array
