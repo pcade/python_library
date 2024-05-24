@@ -582,3 +582,74 @@ def quiksort(array, start=0, end=None):
         quiksort(array, start, pivot_index - 1)
         quiksort(array, pivot_index + 1, end)
     return array
+
+# ============================================================================
+# Поиск в ширину
+# ============================================================================
+
+from collections import deque
+
+def bfs(graph, start_vertex):
+    visited = set()
+    queue = deque([start_vertex])
+
+    while queue:
+        vertex = queue.popleft()
+
+        if vertex not in visited:
+            visited.add(vertex)
+            print(vertex)
+
+            for neighbor in graph[vertex]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+#bfs(graph, 'D')
+
+
+# ============================================================================
+# Алгоритм Беллмана-Форда для поиска кратчайшего пути с обработкой отрицательных весов
+# ============================================================================
+
+def bellman_ford(graph, source):
+    distances = {vertex: float('inf') for vertex in graph}
+    distances[source] = 0
+    predecessors = {vertex: None for vertex in graph}
+
+    for _ in range(len(graph) - 1):
+        for vertex, neighbors in graph.items():
+            for neighbor, weight in neighbors.items():
+                if distances[vertex] + weight < distances[neighbor]:
+                    distances[neighbor] = distances[vertex] + weight
+                    predecessors[neighbor] = vertex
+
+    # Проверка на отрицательные циклы
+    for vertex, neighbors in graph.items():
+        for neighbor, weight in neighbors.items():
+            if distances[vertex] + weight < distances[neighbor]:
+                return None, "Graph contains a negative cycle"
+
+    return distances, predecessors
+
+
+graph = {
+    'A': {'B': 3, 'C': 4},
+    'B': {'D': 2, 'E': -2},  # изменили вес ребра между вершинами B и E на -2
+    'C': {'F': 2},
+    'D': {'E': 1},
+    'E': {'F': 1},
+    'F': {}
+}
+
+#distances, predecessors = bellman_ford(graph, 'A')
+#print("Distances:", distances)
+#print("Predecessors:", predecessors)
